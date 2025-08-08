@@ -1,0 +1,32 @@
+# Requirements for Table Querying Module - Standalone Version
+# Install with: pip install -r requirements.txt
+
+# Core Python libraries (usually included but listed for completeness)
+pathlib2>=2.3.0; python_version<"3.4"
+
+# Document processing and HTML parsing
+docling>=1.0.0
+beautifulsoup4>=4.12.0
+lxml>=4.9.0
+html5lib>=1.1
+
+# Data processing and analysis
+pandas>=1.5.0
+numpy>=1.21.0
+
+# HTTP requests for LLM API calls
+requests>=2.31.0
+urllib3>=1.26.0
+
+# Configuration and data handling
+pydantic>=1.10.0
+
+# Logging and utilities (usually included)
+logging
+
+# Development and testing (optional)
+pytest>=7.0.0
+pytest-cov>=4.0.0
+
+# Database (SQLite3 is included in Python standard library)
+# No additional requirements needed for SQLite

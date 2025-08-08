@@ -1,0 +1,36 @@
+{
+  "_comment": "Template configuration for Table LLM Querying System",
+  "_instructions": "Copy this file and customize for your needs. Never commit actual API keys!",
+  
+  "api_key": "your_openai_api_key_here",
+  "model_id": "gpt-3.5-turbo",
+  "llm_service_type": "openai",
+  "llm_timeout": 30,
+  "llm_max_retries": 3,
+  
+  "context_hint": "Describe the type of documents you're processing (e.g., 'Scientific papers with experimental data')",
+  
+  "db_path": "table_querying.db",
+  "db_service_type": "sqlite",
+  "clear_database_on_start": false,
+  
+  "save_outputs": true,
+  "output_dir": "table_outputs",
+  "max_tables_per_document": 100,
+  
+  "enable_schema_validation": true,
+  "enable_description_generation": true,
+  
+  "_examples": {
+    "minecraft_wiki": {
+      "context_hint": "Minecraft Wiki pages containing game data, recipes, items, blocks, and mechanics information",
+      "output_dir": "minecraft_outputs",
+      "db_path": "minecraft_tables.db"
+    },
+    "scientific_papers": {
+      "context_hint": "Scientific research papers with experimental data tables and statistical results",
+      "output_dir": "research_outputs",
+      "model_id": "gpt-4"
+    }
+  }
+}

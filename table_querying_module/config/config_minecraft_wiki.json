@@ -1,0 +1,13 @@
+{
+  "api_key": "your_openai_api_key_here",
+  "model_id": "gpt-3.5-turbo",
+  "llm_service_type": "openai",
+  "context_hint": "Minecraft Wiki pages containing game data, recipes, items, blocks, and mechanics information",
+  "db_path": "minecraft_tables.db",
+  "clear_database_on_start": false,
+  "save_outputs": true,
+  "output_dir": "minecraft_wiki_outputs",
+  "max_tables_per_document": 100,
+  "enable_schema_validation": true,
+  "enable_description_generation": true
+}

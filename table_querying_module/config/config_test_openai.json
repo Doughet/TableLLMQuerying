@@ -1,0 +1,14 @@
+{
+  "api_key": "${YOUR_API_KEY}",
+  "model_id": "gpt-3.5-turbo",
+  "llm_service_type": "openai",
+  "context_hint": "Test document with sample tables",
+  "db_path": "test_tables_openai.db",
+  "clear_database_on_start": true,
+  "save_outputs": true,
+  "output_dir": "test_outputs",
+  "max_tables_per_document": 100,
+  "enable_schema_validation": true,
+  "enable_description_generation": true,
+  "db_service_type": "sqlite"
+}

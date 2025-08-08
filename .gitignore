@@ -1,0 +1,55 @@
+# API Keys and secrets
+.env
+*.env
+.env.*
+config_local.json
+*_private.json
+*_private.py
+
+# Private implementations (keep BHUB service private)
+table_querying_module/src/services/private/
+*/private/
+private_*
+
+# Database files
+*.db
+
+# Output directories
+*_outputs/
+demo_outputs/
+table_querying_outputs/
+table_querying_test_outputs/
+fresh_outputs/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
