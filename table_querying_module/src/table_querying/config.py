@@ -17,11 +17,19 @@ class TableProcessingConfig:
     
     # LLM Configuration
     api_key: Optional[str] = None
-    model_id: str = "mistral-small"
+    model_id: str = "gpt-3.5-turbo"
+    llm_service_type: str = "openai"
+    llm_base_url: Optional[str] = None
+    llm_organization: Optional[str] = None
+    llm_timeout: int = 30
+    llm_max_retries: int = 3
     context_hint: Optional[str] = None
     
     # Database Configuration
     db_path: str = "table_querying.db"
+    db_service_type: str = "sqlite"
+    db_timeout: float = 30.0
+    db_auto_commit: bool = True
     clear_database_on_start: bool = False
     
     # Output Configuration
@@ -37,7 +45,7 @@ class TableProcessingConfig:
         """Post-initialization processing."""
         # Set API key from environment if not provided
         if not self.api_key:
-            self.api_key = os.getenv("YOUR_API_KEY", "sk-olympia-c1212a60ef6e_254664cd5156954c")
+            self.api_key = os.getenv("YOUR_API_KEY")
         
         # Ensure paths are Path objects
         self.output_dir = str(Path(self.output_dir).resolve())
@@ -48,8 +56,16 @@ class TableProcessingConfig:
         return {
             'api_key': self.api_key,
             'model_id': self.model_id,
+            'llm_service_type': self.llm_service_type,
+            'llm_base_url': self.llm_base_url,
+            'llm_organization': self.llm_organization,
+            'llm_timeout': self.llm_timeout,
+            'llm_max_retries': self.llm_max_retries,
             'context_hint': self.context_hint,
             'db_path': self.db_path,
+            'db_service_type': self.db_service_type,
+            'db_timeout': self.db_timeout,
+            'db_auto_commit': self.db_auto_commit,
             'clear_database_on_start': self.clear_database_on_start,
             'save_outputs': self.save_outputs,
             'output_dir': self.output_dir,
@@ -113,7 +129,7 @@ def create_default_config() -> TableProcessingConfig:
 def create_config_for_minecraft_wiki() -> TableProcessingConfig:
     """Create a configuration optimized for Minecraft Wiki processing."""
     return TableProcessingConfig(
-        context_hint="Minecraft Wiki",
+        context_hint="Minecraft Wiki pages containing game data, recipes, items, blocks, and mechanics information",
         output_dir="minecraft_wiki_outputs",
         db_path="minecraft_tables.db",
         save_outputs=True
@@ -127,8 +143,9 @@ def create_config_template(output_path: str = "table_processing_config.json"):
     
     print(f"Configuration template saved to: {output_path}")
     print("Please update the settings as needed:")
-    print("- api_key: Your BHub API key")
-    print("- model_id: LLM model to use")
+    print("- api_key: Your OpenAI API key")
+    print("- model_id: LLM model to use (gpt-3.5-turbo, gpt-4, etc.)")
+    print("- llm_service_type: LLM provider ('openai' by default)")
     print("- context_hint: Context for better table descriptions")
     print("- db_path: Database file path")
     print("- output_dir: Directory for output files")

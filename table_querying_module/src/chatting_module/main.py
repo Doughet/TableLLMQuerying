@@ -254,12 +254,12 @@ Examples:
     )
     parser.add_argument(
         '--api-key',
-        help='BHub API key for LLM processing (can also use YOUR_API_KEY env var)'
+        help='OpenAI API key for LLM processing (can also use YOUR_API_KEY env var)'
     )
     parser.add_argument(
         '--model-id',
-        default='mistral-small',
-        help='LLM model ID to use (default: mistral-small)'
+        default='gpt-3.5-turbo',
+        help='LLM model ID to use (default: gpt-3.5-turbo)'
     )
     parser.add_argument(
         '--verbose', '-v',

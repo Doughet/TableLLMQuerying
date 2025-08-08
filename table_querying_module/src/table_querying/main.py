@@ -196,12 +196,12 @@ Examples:
     )
     config_group.add_argument(
         '--api-key',
-        help='BHub API key for LLM processing'
+        help='OpenAI API key for LLM processing'
     )
     config_group.add_argument(
         '--model-id',
-        default='mistral-small',
-        help='LLM model ID to use'
+        default='gpt-3.5-turbo',
+        help='LLM model ID to use (default: gpt-3.5-turbo)'
     )
     config_group.add_argument(
         '--context-hint',

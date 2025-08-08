@@ -5,6 +5,8 @@
   "api_key": "your_openai_api_key_here",
   "model_id": "gpt-3.5-turbo",
   "llm_service_type": "openai",
+  "llm_base_url": null,
+  "llm_organization": null,
   "llm_timeout": 30,
   "llm_max_retries": 3,
   
@@ -12,6 +14,8 @@
   
   "db_path": "table_querying.db",
   "db_service_type": "sqlite",
+  "db_timeout": 30.0,
+  "db_auto_commit": true,
   "clear_database_on_start": false,
   
   "save_outputs": true,
@@ -31,6 +35,11 @@
       "context_hint": "Scientific research papers with experimental data tables and statistical results",
       "output_dir": "research_outputs",
       "model_id": "gpt-4"
+    },
+    "with_environment_variables": {
+      "api_key": "${YOUR_API_KEY}",
+      "model_id": "${TABLE_MODEL_ID}",
+      "context_hint": "Using environment variables for configuration"
     }
   }
 }
