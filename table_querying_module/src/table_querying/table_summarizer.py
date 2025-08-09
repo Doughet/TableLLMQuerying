@@ -17,20 +17,21 @@ logger = logging.getLogger(__name__)
 class TableSummarizer:
     """Generates intelligent descriptions of tables using LLM models."""
     
-    def __init__(self, api_key: Optional[str] = None, model_id: str = "mistral-small"):
+    def __init__(self, api_key: Optional[str] = None, model_id: str = "gpt-3.5-turbo", base_url: Optional[str] = None):
         """
         Initialize the TableSummarizer.
         
         Args:
-            api_key: BHub API key. If not provided, will use YOUR_API_KEY environment variable
+            api_key: API key. If not provided, will use OPENAI_API_KEY or API_KEY environment variable
             model_id: Model to use for generation
+            base_url: Base URL for the API (optional, defaults to OpenAI)
         """
-        self.api_key = api_key or os.getenv("YOUR_API_KEY") or "sk-olympia-c1212a60ef6e_254664cd5156954c"
+        self.api_key = api_key or os.getenv("OPENAI_API_KEY") or os.getenv("API_KEY")
         if not self.api_key:
-            raise ValueError("Please provide a BHub API key either as parameter or set YOUR_API_KEY environment variable")
+            raise ValueError("Please provide an API key either as parameter or set OPENAI_API_KEY environment variable")
         
         self.model_id = model_id
-        self.base_url = "https://api.olympia.bhub.cloud/v1/chat/completions"
+        self.base_url = base_url or "https://api.openai.com/v1/chat/completions"
         self.headers = {
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json"

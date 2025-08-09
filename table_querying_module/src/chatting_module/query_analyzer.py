@@ -27,17 +27,17 @@ class AnalysisResult:
 class QueryAnalyzer:
     """Analyzes user queries to determine if they can be fulfilled by table data."""
     
-    def __init__(self, api_key: str, model_id: str = "mistral-small"):
+    def __init__(self, api_key: str, model_id: str = "gpt-3.5-turbo"):
         """
         Initialize the QueryAnalyzer.
         
         Args:
-            api_key: BHub API key for LLM calls
+            api_key: API key for LLM calls
             model_id: Model to use for analysis
         """
         self.api_key = api_key
         self.model_id = model_id
-        self.api_url = "https://api.olympia.bhub.cloud/v1/chat/completions"
+        self.api_url = "https://api.openai.com/v1/chat/completions"
         logger.info(f"QueryAnalyzer initialized with model {model_id}")
     
     def analyze_query(self, user_query: str, available_tables: List[Dict[str, Any]]) -> AnalysisResult:

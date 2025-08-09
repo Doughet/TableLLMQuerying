@@ -254,7 +254,7 @@ Examples:
     )
     parser.add_argument(
         '--api-key',
-        help='OpenAI API key for LLM processing (can also use YOUR_API_KEY env var)'
+        help='OpenAI API key for LLM processing (can also use OPENAI_API_KEY env var)'
     )
     parser.add_argument(
         '--model-id',
@@ -302,9 +302,9 @@ Examples:
     setup_logging(args.verbose)
     
     # Get API key
-    api_key = args.api_key or os.getenv('YOUR_API_KEY')
+    api_key = args.api_key or os.getenv('OPENAI_API_KEY') or os.getenv('API_KEY')
     if not api_key:
-        print("❌ Error: API key is required. Set YOUR_API_KEY environment variable or use --api-key")
+        print("❌ Error: API key is required. Set OPENAI_API_KEY environment variable or use --api-key")
         return 1
     
     # Check database exists

@@ -15,10 +15,10 @@ from pathlib import Path
 class TableProcessingConfig:
     """Configuration settings for table processing."""
     
-    # LLM Configuration
+    # LLM Configuration  
     api_key: Optional[str] = None
-    model_id: str = "gpt-3.5-turbo"
-    llm_service_type: str = "openai"
+    model_id: str = "gpt-3.5-turbo"  # Default OpenAI model
+    llm_service_type: str = "openai"  # Default to OpenAI
     llm_base_url: Optional[str] = None
     llm_organization: Optional[str] = None
     llm_timeout: int = 30
@@ -45,7 +45,7 @@ class TableProcessingConfig:
         """Post-initialization processing."""
         # Set API key from environment if not provided
         if not self.api_key:
-            self.api_key = os.getenv("YOUR_API_KEY")
+            self.api_key = os.getenv("OPENAI_API_KEY") or os.getenv("API_KEY")
         
         # Ensure paths are Path objects
         self.output_dir = str(Path(self.output_dir).resolve())
@@ -153,7 +153,8 @@ def create_config_template(output_path: str = "table_processing_config.json"):
 
 # Environment variable mapping
 ENV_VAR_MAPPING = {
-    'YOUR_API_KEY': 'api_key',
+    'OPENAI_API_KEY': 'api_key',
+    'API_KEY': 'api_key',  # Fallback for generic API key
     'TABLE_MODEL_ID': 'model_id',
     'TABLE_DB_PATH': 'db_path',
     'TABLE_OUTPUT_DIR': 'output_dir',

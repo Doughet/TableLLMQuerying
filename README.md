@@ -1,13 +1,13 @@
 # 🔍 Table LLM Querying System
 
-> **Extract HTML tables, generate intelligent descriptions, and query your data with natural language**
+> **Extract tables from HTML and Excel documents, generate intelligent descriptions, and query your data with natural language**
 
-A comprehensive Python system that transforms HTML tables into queryable databases with AI-powered natural language descriptions. Perfect for researchers, data analysts, and developers working with structured web data.
+A comprehensive Python system that transforms document tables (HTML, Excel) into queryable databases with AI-powered natural language descriptions. Perfect for researchers, data analysts, and developers working with structured data.
 
 ## 🌟 What Can You Do?
 
 ### 📊 **Table Processing**
-- **Extract tables** from any HTML document automatically
+- **Extract tables** from HTML documents and Excel files automatically
 - **Generate schemas** with intelligent type inference (string, number, date, etc.)
 - **Create descriptions** using OpenAI to explain what each table contains
 - **Store everything** in a SQLite database for easy querying
@@ -20,12 +20,13 @@ A comprehensive Python system that transforms HTML tables into queryable databas
 
 ### 🔄 **Complete Workflow**
 ```
-HTML Documents → Extract Tables → AI Descriptions → Database → Natural Language Queries
+Documents (HTML/Excel) → Smart Extractor Router → Extract Tables → AI Descriptions → Database → Natural Language Queries
 ```
 
 ## 🎯 Perfect For
 
 - **Web scraping projects** with table data
+- **Excel analysis** and data processing workflows
 - **Research papers** analysis and data extraction
 - **Wiki processing** (like Minecraft Wiki, Wikipedia)
 - **Documentation** with structured data tables
@@ -55,14 +56,17 @@ pip install -e .
 Create a `.env` file in the project root:
 ```bash
 # In /TableLLMQuerying/.env
-YOUR_API_KEY=your_openai_api_key_here
+OPENAI_API_KEY=your_openai_api_key_here
 TABLE_MODEL_ID=gpt-3.5-turbo
 ```
 
 ### 4. **Test with Sample Data**
 ```bash
-# Process the included sample HTML file
-python -m src.table_querying.main config/sample_table.html
+# Process HTML files
+python -m src.table_querying.main your_document.html
+
+# Process Excel files  
+python -m src.table_querying.main your_spreadsheet.xlsx
 
 # Chat with the results
 python -m src.chatting_module.main --db table_querying.db
@@ -72,12 +76,15 @@ That's it! 🎉
 
 ## 📖 Complete Usage Guide
 
-### 📄 **Processing HTML Files**
+### 📄 **Processing Documents**
 
 #### **Single File Processing**
 ```bash
-# Basic processing
+# Basic HTML processing
 python -m src.table_querying.main your_document.html
+
+# Basic Excel processing
+python -m src.table_querying.main your_spreadsheet.xlsx
 
 # With custom configuration
 python -m src.table_querying.main your_document.html --config config/config_default.json
@@ -88,8 +95,8 @@ python -m src.table_querying.main your_document.html --output-dir results/
 
 #### **Batch Processing**
 ```bash
-# Process all HTML files in a directory
-python -m src.table_querying.main --directory /path/to/html/files
+# Process all supported files (HTML, Excel) in a directory
+python -m src.table_querying.main --directory /path/to/files
 
 # Recursive search in subdirectories
 python -m src.table_querying.main --directory /path/to/docs --recursive
@@ -154,7 +161,7 @@ python -m src.chatting_module.main --db table_querying.db --query "Show me all t
 You can use environment variables in config files:
 ```json
 {
-  "api_key": "${YOUR_API_KEY}",
+  "api_key": "${OPENAI_API_KEY}",
   "model_id": "${TABLE_MODEL_ID}"
 }
 ```
@@ -309,7 +316,7 @@ You can ask questions like:
 **"API key not found"**
 ```bash
 # Make sure your .env file exists and contains:
-YOUR_API_KEY=your_actual_api_key_here
+OPENAI_API_KEY=your_actual_api_key_here
 ```
 
 **"No tables found"**

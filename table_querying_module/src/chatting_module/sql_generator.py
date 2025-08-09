@@ -29,19 +29,19 @@ class SQLResult:
 class SQLGenerator:
     """Generates SQL queries from user requests with retry logic."""
     
-    def __init__(self, api_key: str, model_id: str = "mistral-small", max_retries: int = 5):
+    def __init__(self, api_key: str, model_id: str = "gpt-3.5-turbo", max_retries: int = 5):
         """
         Initialize the SQLGenerator.
         
         Args:
-            api_key: BHub API key for LLM calls
+            api_key: API key for LLM calls
             model_id: Model to use for SQL generation
             max_retries: Maximum number of retry attempts
         """
         self.api_key = api_key
         self.model_id = model_id
         self.max_retries = max_retries
-        self.api_url = "https://api.olympia.bhub.cloud/v1/chat/completions"
+        self.api_url = "https://api.openai.com/v1/chat/completions"
         logger.info(f"SQLGenerator initialized with model {model_id}, max_retries={max_retries}")
     
     def generate_sql(self, user_query: str, database_schema: Dict[str, Any], 

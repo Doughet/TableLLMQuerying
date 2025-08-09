@@ -10,7 +10,7 @@ __version__ = "1.0.0"
 __author__ = "CraftGraphRag Project"
 
 # Import main classes for easy access
-from .table_extractor import TableExtractor
+from .extractors import ExtractorFactory, ExtractorRouter
 from .schema_processor import SchemaProcessor  
 from .table_summarizer import TableSummarizer
 from .table_database import TableDatabase
@@ -20,7 +20,8 @@ from .config import TableProcessingConfig, create_default_config, create_config_
 
 # Define what gets imported with "from table_querying import *"
 __all__ = [
-    'TableExtractor',
+    'ExtractorFactory',
+    'ExtractorRouter',
     'SchemaProcessor', 
     'TableSummarizer',
     'TableDatabase',

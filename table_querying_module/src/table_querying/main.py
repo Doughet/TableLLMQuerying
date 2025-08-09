@@ -2,8 +2,8 @@
 """
 Main CLI interface for the Table Querying Module.
 
-This script provides a command-line interface for processing HTML documents
-with tables using the complete table processing workflow.
+This script provides a command-line interface for processing documents
+with tables (HTML, Excel) using the complete table processing workflow.
 """
 
 import argparse
@@ -46,17 +46,17 @@ def setup_logging(verbose: bool = False):
     )
 
 
-def process_single_document(html_file: str, config: TableProcessingConfig, verbose: bool = False):
-    """Process a single HTML document."""
+def process_single_document(document_file: str, config: TableProcessingConfig, verbose: bool = False):
+    """Process a single document (HTML or Excel)."""
     if verbose:
-        print(f"Processing document: {html_file}")
+        print(f"Processing document: {document_file}")
         print(f"Configuration: {config.to_dict()}")
     
     # Initialize processor
     processor = TableProcessor(config.to_dict())
     
     # Process document
-    results = processor.process_document(html_file)
+    results = processor.process_document(document_file)
     
     # Print results
     processor.print_processing_summary(results)
@@ -64,9 +64,9 @@ def process_single_document(html_file: str, config: TableProcessingConfig, verbo
     return results
 
 
-def process_multiple_documents(html_files: list, config: TableProcessingConfig, verbose: bool = False):
-    """Process multiple HTML documents."""
-    print(f"Processing {len(html_files)} documents...")
+def process_multiple_documents(document_files: list, config: TableProcessingConfig, verbose: bool = False):
+    """Process multiple documents (HTML or Excel)."""
+    print(f"Processing {len(document_files)} documents...")
     
     # Initialize processor (reuse for efficiency)
     processor = TableProcessor(config.to_dict())
@@ -75,17 +75,17 @@ def process_multiple_documents(html_files: list, config: TableProcessingConfig, 
     successful = 0
     failed = 0
     
-    for i, html_file in enumerate(html_files, 1):
-        print(f"\n{'='*20} Processing {i}/{len(html_files)} {'='*20}")
-        print(f"File: {Path(html_file).name}")
+    for i, document_file in enumerate(document_files, 1):
+        print(f"\n{'='*20} Processing {i}/{len(document_files)} {'='*20}")
+        print(f"File: {Path(document_file).name}")
         
         try:
-            results = processor.process_document(html_file)
+            results = processor.process_document(document_file)
             all_results.append(results)
             
             if results.get('success', False):
                 successful += 1
-                print(f"✅ Successfully processed {Path(html_file).name}")
+                print(f"✅ Successfully processed {Path(document_file).name}")
             else:
                 failed += 1
                 print(f"❌ Failed to process {Path(html_file).name}: {results.get('error', 'Unknown error')}")
@@ -103,10 +103,10 @@ def process_multiple_documents(html_files: list, config: TableProcessingConfig, 
     print(f"\n{'='*60}")
     print("BATCH PROCESSING SUMMARY")
     print(f"{'='*60}")
-    print(f"Total Documents: {len(html_files)}")
+    print(f"Total Documents: {len(document_files)}")
     print(f"✅ Successful: {successful}")
     print(f"❌ Failed: {failed}")
-    print(f"Success Rate: {successful/len(html_files)*100:.1f}%")
+    print(f"Success Rate: {successful/len(document_files)*100:.1f}%")
     
     # Database summary
     db_summary = processor.get_database_summary()
@@ -118,8 +118,10 @@ def process_multiple_documents(html_files: list, config: TableProcessingConfig, 
     return all_results
 
 
-def discover_html_files(directory: str, recursive: bool = False) -> list:
-    """Discover HTML files in a directory."""
+def discover_supported_files(directory: str, recursive: bool = False) -> list:
+    """Discover supported files (HTML, Excel) in a directory."""
+    from .extractors.extractor_factory import ExtractorFactory
+    
     path = Path(directory)
     
     if not path.exists():
@@ -128,31 +130,38 @@ def discover_html_files(directory: str, recursive: bool = False) -> list:
     if not path.is_dir():
         raise ValueError(f"Path is not a directory: {directory}")
     
-    pattern = "**/*.html" if recursive else "*.html"
-    html_files = list(path.glob(pattern))
+    # Get supported extensions from the router
+    router = ExtractorFactory.create_router()
+    supported_extensions = router.get_supported_extensions()
     
-    # Also check for .htm files
-    htm_pattern = "**/*.htm" if recursive else "*.htm"
-    html_files.extend(path.glob(htm_pattern))
+    supported_files = []
+    for ext in supported_extensions:
+        # Remove the dot for glob pattern
+        ext_pattern = ext[1:] if ext.startswith('.') else ext
+        pattern = f"**/*.{ext_pattern}" if recursive else f"*.{ext_pattern}"
+        supported_files.extend(path.glob(pattern))
     
-    return [str(f) for f in html_files]
+    return [str(f) for f in supported_files]
 
 
 def main():
     """Main CLI entry point."""
     parser = argparse.ArgumentParser(
-        description="Table Querying Module - Extract, process, and query tables from HTML documents",
+        description="Table Querying Module - Extract, process, and query tables from supported documents (HTML, Excel)",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
   # Process a single HTML file
   python -m table_querying_module.main document.html
   
+  # Process a single Excel file
+  python -m table_querying_module.main workbook.xlsx
+  
   # Process with custom configuration
   python -m table_querying_module.main document.html --config my_config.json
   
-  # Process all HTML files in a directory
-  python -m table_querying_module.main --directory /path/to/html/files
+  # Process all supported files in a directory
+  python -m table_querying_module.main --directory /path/to/files
   
   # Process with Minecraft Wiki optimized settings
   python -m table_querying_module.main document.html --preset minecraft-wiki
@@ -168,13 +177,13 @@ Examples:
     # Input options (mutually exclusive)
     input_group = parser.add_mutually_exclusive_group(required=True)
     input_group.add_argument(
-        'html_file',
+        'document_file',
         nargs='?',
-        help='HTML file to process'
+        help='Document file to process (HTML, Excel)'
     )
     input_group.add_argument(
         '--directory', '-d',
-        help='Directory containing HTML files to process'
+        help='Directory containing supported files to process'
     )
     input_group.add_argument(
         '--create-config-template',
@@ -200,8 +209,8 @@ Examples:
     )
     config_group.add_argument(
         '--model-id',
-        default='gpt-3.5-turbo',
-        help='LLM model ID to use (default: gpt-3.5-turbo)'
+        default=None,
+        help='LLM model ID to use (default: mistral-small for BHub, gpt-3.5-turbo for OpenAI)'
     )
     config_group.add_argument(
         '--context-hint',
@@ -231,7 +240,7 @@ Examples:
     proc_group.add_argument(
         '--recursive', '-r',
         action='store_true',
-        help='Search for HTML files recursively in subdirectories'
+        help='Search for supported files recursively in subdirectories'
     )
     
     # Other options
@@ -282,30 +291,30 @@ Examples:
             config.save_outputs = False
         
         # Process files
-        if args.html_file:
+        if args.document_file:
             # Single file processing
-            if not Path(args.html_file).exists():
-                print(f"Error: File not found: {args.html_file}")
+            if not Path(args.document_file).exists():
+                print(f"Error: File not found: {args.document_file}")
                 return 1
             
-            results = process_single_document(args.html_file, config, args.verbose)
+            results = process_single_document(args.document_file, config, args.verbose)
             return 0 if results.get('success', False) else 1
         
         elif args.directory:
             # Directory processing
             try:
-                html_files = discover_html_files(args.directory, args.recursive)
+                document_files = discover_supported_files(args.directory, args.recursive)
                 
-                if not html_files:
-                    print(f"No HTML files found in directory: {args.directory}")
+                if not document_files:
+                    print(f"No supported files found in directory: {args.directory}")
                     return 1
                 
-                print(f"Found {len(html_files)} HTML files")
+                print(f"Found {len(document_files)} supported files")
                 if args.verbose:
-                    for f in html_files:
+                    for f in document_files:
                         print(f"  - {f}")
                 
-                all_results = process_multiple_documents(html_files, config, args.verbose)
+                all_results = process_multiple_documents(document_files, config, args.verbose)
                 
                 # Return success if at least one file was processed successfully
                 successful = sum(1 for r in all_results if r.get('success', False))
